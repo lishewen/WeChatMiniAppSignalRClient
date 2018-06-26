@@ -1,0 +1,3 @@
+<view class="intro">{{messages}}</view>
+<input placeholder="输入信息" bindinput="bindKeyInput" />
+<button type="primary" bindtap="sendMessage">发送消息</button>
