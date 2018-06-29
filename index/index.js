@@ -43,13 +43,22 @@ Page({
       });
     });
     wx.onSocketMessage(function(res) {
-      let obj = JSON.parse(String(res.data).replace(self.RecordSeparator, ''));
-      if (obj.type == 1 && obj.target == 'Send') {
-        let messages = obj.arguments[0].message;
-        console.log(messages);
-        self.setData({
-          messages: (self.data.messages || '') + '\r\n' + messages
-        });
+      try {
+        let jsonstr = String(res.data).replace(RecordSeparator, '');
+        if (jsonstr.indexOf('{') > 1)
+          jsonstr = jsonstr.replace('{}', '');
+
+        let obj = JSON.parse(jsonstr);
+        if (obj.type == 1 && obj.target == 'Send') {
+          let messages = obj.arguments[0].message;
+          //console.log(messages);
+          self.setData({
+            messages: messages
+          });
+        }
+      } catch (ex) {
+        console.log('异常：' + ex);
+        console.log('收到服务器内容：' + res.data);
       }
     });
     wx.onSocketError(function() {
