@@ -44,8 +44,8 @@ Page({
     });
     wx.onSocketMessage(function(res) {
       try {
-        let jsonstr = String(res.data).replace(self.RecordSeparator, '');
-        if (jsonstr.indexOf('{') > 1)
+        let jsonstr = String(res.data).replace(RecordSeparator, '');
+        if (jsonstr.indexOf('{}{') > -1)
           jsonstr = jsonstr.replace('{}', '');
 
         let obj = JSON.parse(jsonstr);
