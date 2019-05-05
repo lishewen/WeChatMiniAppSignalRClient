@@ -11,6 +11,7 @@ Page({
   },
   sendMessage: function() {
     let self = this;
+    let RecordSeparator = String.fromCharCode(self.RecordSeparatorCode);
     let body = {
       arguments: [{
         message: self.inputValue,
@@ -19,7 +20,7 @@ Page({
       target: 'SendMessage',
       type: 1,
     };
-    let senddata = `${JSON.stringify(body)}${self.RecordSeparator}`;
+    let senddata = `${JSON.stringify(body)}${RecordSeparator}`;
     console.log(senddata);
     wx.sendSocketMessage({
       data: senddata,
@@ -27,7 +28,7 @@ Page({
   },
   connectSignalR: function() {
     let self = this;
-    self.RecordSeparator = String.fromCharCode(self.RecordSeparatorCode);
+    let RecordSeparator = String.fromCharCode(self.RecordSeparatorCode);
     wx.connectSocket({
       url: "wss://jbwx.lishewen.com/testmessages",
     });
@@ -37,7 +38,7 @@ Page({
         protocol: 'json',
         version: 1
       };
-      let senddata = `${JSON.stringify(handshakeRequest)}${self.RecordSeparator}`;
+      let senddata = `${JSON.stringify(handshakeRequest)}${RecordSeparator}`;
       wx.sendSocketMessage({
         data: senddata,
       });
@@ -45,8 +46,10 @@ Page({
     wx.onSocketMessage(function(res) {
       try {
         let jsonstr = String(res.data).replace(RecordSeparator, '');
-        if (jsonstr.indexOf('{}{') > -1)
+        if (jsonstr.indexOf('{}{') > -1) {
           jsonstr = jsonstr.replace('{}', '');
+          jsonstr = jsonstr.substring(0, jsonstr.length - 1);
+        }
 
         let obj = JSON.parse(jsonstr);
         if (obj.type == 1 && obj.target == 'Send') {

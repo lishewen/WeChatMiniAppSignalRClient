@@ -4,4 +4,4 @@
 服务端麻烦自己搭
 
 # 代码片段分享链接
-wechatide://minicode/broWTSml7krK
+https://developers.weixin.qq.com/s/eTddt8ma768l
