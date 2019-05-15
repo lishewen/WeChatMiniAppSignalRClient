@@ -6,10 +6,10 @@ Page({
   data: {
 
   },
-  bindKeyInput: function(e) {
+  bindKeyInput(e) {
     this.inputValue = e.detail.value;
   },
-  sendMessage: function() {
+  sendMessage() {
     let self = this;
     let RecordSeparator = String.fromCharCode(self.RecordSeparatorCode);
     let body = {
@@ -26,13 +26,13 @@ Page({
       data: senddata,
     });
   },
-  connectSignalR: function() {
+  connectSignalR() {
     let self = this;
     let RecordSeparator = String.fromCharCode(self.RecordSeparatorCode);
     wx.connectSocket({
       url: "wss://jbwx.lishewen.com/testmessages",
     });
-    wx.onSocketOpen(function() {
+    wx.onSocketOpen(() => {
       console.log('连接成功');
       let handshakeRequest = {
         protocol: 'json',
@@ -43,32 +43,31 @@ Page({
         data: senddata,
       });
     });
-    wx.onSocketMessage(function(res) {
+    wx.onSocketMessage(res => {
       try {
-        let jsonstr = String(res.data).replace(RecordSeparator, '');
-        if (jsonstr.indexOf('{}{') > -1) {
-          jsonstr = jsonstr.replace('{}', '');
-          jsonstr = jsonstr.substring(0, jsonstr.length - 1);
-        }
-
-        let obj = JSON.parse(jsonstr);
-        if (obj.type == 1 && obj.target == 'Send') {
-          let messages = obj.arguments[0].message;
-          //console.log(messages);
-          self.setData({
-            messages: messages
-          });
-        }
+        let jsonstrs = String(res.data).split(RecordSeparator);
+        jsonstrs.forEach(jsonstr => {
+          if (jsonstr) {
+            let obj = JSON.parse(jsonstr);
+            if (obj.type == 1 && obj.target == 'Send') {
+              let messages = obj.arguments[0].message;
+              //console.log(messages);
+              self.setData({
+                messages: messages
+              });
+            }
+          }
+        });
       } catch (ex) {
         console.log('异常：' + ex);
         console.log('收到服务器内容：' + res.data);
       }
     });
-    wx.onSocketError(function() {
+    wx.onSocketError(() => {
       console.log('websocket连接失败！');
     });
   },
-  onLoad: function() {
+  onLoad() {
     this.connectSignalR();
   },
 })

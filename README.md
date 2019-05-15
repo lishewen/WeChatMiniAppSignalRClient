@@ -6,4 +6,4 @@
 服务端源码：https://github.com/lishewen/SignalRSimpleSample
 
 # 代码片段分享链接
-https://developers.weixin.qq.com/s/eTddt8ma768l
+https://developers.weixin.qq.com/s/IDLPCnm87W8u
